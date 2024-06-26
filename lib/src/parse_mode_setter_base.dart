@@ -71,6 +71,9 @@ class ParseModeSetter implements Transformer {
   ///   - `APIMethod.sendPoll`
   ///   - `APIMethod.editMessageText`
   ///   - `APIMethod.editMessageCaption`
+  ///   - `APIMethod.editMessageMedia`
+  ///   - `APIMethod.sendMediaGroup`
+  ///   - `APIMethod.answerInlineQuery`
   ///
   /// * **[disallowedMethods]:** This is a list of API methods that are explicitly
   /// prohibited from having their parse mode set. Defaults to an empty list.
@@ -114,6 +117,8 @@ class ParseModeSetter implements Transformer {
       APIMethod.editMessageCaption,
       APIMethod.editMessageCaption,
       APIMethod.answerInlineQuery,
+      APIMethod.editMessageMedia,
+      APIMethod.sendMediaGroup,
     ],
     this.disallowedMethods = const [],
     this.setExplanationParseMode = true,
@@ -164,6 +169,18 @@ class ParseModeSetter implements Transformer {
         }
       }
       payload['results'] = results;
+    } else if (method == APIMethod.editMessageMedia) {
+      if (payload["media"]["caption"] != null) {
+        payload["media"][kParseMode] = parseMode.value;
+      }
+    } else if (method == APIMethod.sendMediaGroup) {
+      final List<dynamic> media = payload["media"];
+      for (int i = 0; i < media.length; i++) {
+        if (media[i]["caption"] != null) {
+          media[i][kParseMode] = parseMode.value;
+        }
+      }
+      payload["media"] = media;
     } else {
       payload[kParseMode] = parseMode.value;
     }

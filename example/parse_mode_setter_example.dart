@@ -18,5 +18,16 @@ void main(List<String> args) {
     );
   });
 
+  bot.onInlineQuery((ctx) async {
+    final results = InlineQueryResultBuilder().article(
+      "test-id",
+      "Hello",
+      (content) => content.text(
+        "<b>This is a simple</b> bolded text. And this is <tg-spoiler>spoiler</tg-spoiler> hidden text.",
+      ),
+    );
+    await ctx.answerInlineQuery(results.build());
+  });
+
   bot.start();
 }

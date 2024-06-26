@@ -113,6 +113,7 @@ class ParseModeSetter implements Transformer {
       APIMethod.editMessageText,
       APIMethod.editMessageCaption,
       APIMethod.editMessageCaption,
+      APIMethod.answerInlineQuery,
     ],
     this.disallowedMethods = const [],
     this.setExplanationParseMode = true,
@@ -131,6 +132,7 @@ class ParseModeSetter implements Transformer {
     if (disallowedMethods.contains(method)) {
       return call(method, payload);
     }
+    const kParseMode = "parse_mode";
 
     final isSendPoll = method == APIMethod.sendPoll;
 
@@ -141,8 +143,29 @@ class ParseModeSetter implements Transformer {
       if (setQuestionParseMode) {
         payload["question_parse_mode"] = parseMode.value;
       }
+    } else if (method == APIMethod.answerInlineQuery) {
+      const supported = [
+        "voice",
+        "audio",
+        "video",
+        "photo",
+        "mpeg4_gif",
+        "gif",
+        "document",
+      ];
+
+      final List<dynamic> results = payload['results'];
+      for (int i = 0; i < results.length; i++) {
+        if (supported.contains(results[i]['type'])) {
+          results[i][kParseMode] = parseMode.value;
+        }
+        if (results[i]['input_message_content']?["message_text"] != null) {
+          results[i]['input_message_content'][kParseMode] = parseMode.value;
+        }
+      }
+      payload['results'] = results;
     } else {
-      payload["parse_mode"] = parseMode.value;
+      payload[kParseMode] = parseMode.value;
     }
 
     return call(method, payload);

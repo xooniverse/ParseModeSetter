@@ -72,7 +72,11 @@ Customize the `ParseModeSetter` class using the following properties:
     APIMethod.sendPoll,
     APIMethod.editMessageText,
     APIMethod.editMessageCaption,
-  ]
+    APIMethod.editMessageCaption,
+    APIMethod.answerInlineQuery,
+    APIMethod.editMessageMedia,
+    APIMethod.sendMediaGroup,
+  ],
   ```
 - `disallowedMethods`: A list of API methods that should not have their parse
   mode set. Defaults to an empty list.

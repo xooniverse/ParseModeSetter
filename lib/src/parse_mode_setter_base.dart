@@ -128,9 +128,9 @@ class ParseModeSetter implements Transformer {
   @override
   Future<Map<String, dynamic>> transform(
     APICaller call,
-    APIMethod method,
-    Payload payload,
-  ) {
+    APIMethod method, [
+    Payload? payload,
+  ]) {
     if (!allowedMethods.contains(method)) {
       return call(method, payload);
     }
@@ -143,10 +143,10 @@ class ParseModeSetter implements Transformer {
 
     if (isSendPoll) {
       if (setExplanationParseMode) {
-        payload["explanation_parse_mode"] = parseMode.value;
+        payload?["explanation_parse_mode"] = parseMode.value;
       }
       if (setQuestionParseMode) {
-        payload["question_parse_mode"] = parseMode.value;
+        payload?["question_parse_mode"] = parseMode.value;
       }
     } else if (method == APIMethod.answerInlineQuery) {
       const supported = [
@@ -159,7 +159,7 @@ class ParseModeSetter implements Transformer {
         "document",
       ];
 
-      final List<dynamic> results = payload['results'];
+      final List<dynamic> results = payload?['results'];
       for (int i = 0; i < results.length; i++) {
         if (supported.contains(results[i]['type'])) {
           results[i][kParseMode] = parseMode.value;
@@ -168,21 +168,21 @@ class ParseModeSetter implements Transformer {
           results[i]['input_message_content'][kParseMode] = parseMode.value;
         }
       }
-      payload['results'] = results;
+      payload?['results'] = results;
     } else if (method == APIMethod.editMessageMedia) {
-      if (payload["media"]["caption"] != null) {
-        payload["media"][kParseMode] = parseMode.value;
+      if (payload?["media"]["caption"] != null) {
+        payload?["media"][kParseMode] = parseMode.value;
       }
     } else if (method == APIMethod.sendMediaGroup) {
-      final List<dynamic> media = payload["media"];
+      final List<dynamic> media = payload?["media"];
       for (int i = 0; i < media.length; i++) {
         if (media[i]["caption"] != null) {
           media[i][kParseMode] = parseMode.value;
         }
       }
-      payload["media"] = media;
+      payload?["media"] = media;
     } else {
-      payload[kParseMode] = parseMode.value;
+      payload?[kParseMode] = parseMode.value;
     }
 
     return call(method, payload);

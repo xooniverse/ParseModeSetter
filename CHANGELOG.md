@@ -1,3 +1,7 @@
+# 1.2.0
+
+- Updated `televerse` version to 2.4.0
+
 # 1.1.0
 
 - Updated Transformer definition

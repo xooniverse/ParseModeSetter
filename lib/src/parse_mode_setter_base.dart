@@ -143,10 +143,10 @@ class ParseModeSetter implements Transformer {
 
     if (isSendPoll) {
       if (setExplanationParseMode) {
-        payload?["explanation_parse_mode"] = parseMode.value;
+        payload?["explanation_parse_mode"] = parseMode.toJson();
       }
       if (setQuestionParseMode) {
-        payload?["question_parse_mode"] = parseMode.value;
+        payload?["question_parse_mode"] = parseMode.toJson();
       }
     } else if (method == APIMethod.answerInlineQuery) {
       const supported = [
@@ -162,27 +162,27 @@ class ParseModeSetter implements Transformer {
       final List<dynamic> results = payload?['results'];
       for (int i = 0; i < results.length; i++) {
         if (supported.contains(results[i]['type'])) {
-          results[i][kParseMode] = parseMode.value;
+          results[i][kParseMode] = parseMode.toJson();
         }
         if (results[i]['input_message_content']?["message_text"] != null) {
-          results[i]['input_message_content'][kParseMode] = parseMode.value;
+          results[i]['input_message_content'][kParseMode] = parseMode.toJson();
         }
       }
       payload?['results'] = results;
     } else if (method == APIMethod.editMessageMedia) {
       if (payload?["media"]["caption"] != null) {
-        payload?["media"][kParseMode] = parseMode.value;
+        payload?["media"][kParseMode] = parseMode.toJson();
       }
     } else if (method == APIMethod.sendMediaGroup) {
       final List<dynamic> media = payload?["media"];
       for (int i = 0; i < media.length; i++) {
         if (media[i]["caption"] != null) {
-          media[i][kParseMode] = parseMode.value;
+          media[i][kParseMode] = parseMode.toJson();
         }
       }
       payload?["media"] = media;
     } else {
-      payload?[kParseMode] = parseMode.value;
+      payload?[kParseMode] = parseMode.toJson();
     }
 
     return call(method, payload);

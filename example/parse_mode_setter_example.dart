@@ -9,7 +9,7 @@ final bot = Bot(Platform.environment["BOT_TOKEN"]!);
 void main(List<String> args) {
   // Attach the Parse Mode Setter with passing necessary parameters.
   // Here we are setting the parse mode to HTML.
-  bot.use(ParseModeSetter(ParseMode.html));
+  bot.plugin(ParseModeSetterPlugin(ParseMode.html));
 
   bot.command('start', (ctx) async {
     // Now use HTML text within the methods, don't worry about not passing the parse mode
